@@ -88,7 +88,7 @@ def webcamTest(model):
         if max_value>0.80 :
             name=image_name[max_index]
     
-        cv2.putText(original, "Label: {0} {1}".format(name,max_value), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv2.putText(original, "Label: {0}".format(name), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         cv2.imshow("Classification", original)
         cv2.waitKey(5)
         if (cv2.waitKey(5) & 0xFF == ord('q')):
