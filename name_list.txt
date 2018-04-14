@@ -1,0 +1,38 @@
+Road bump ahead
+Slippery road surface
+Left Curve
+Right Curve
+Right Double curve
+Children
+Roadworks ahead
+Level crossing with barriers ahead
+Other danger
+Road narrows on both sides
+Road narrows on right (left)
+Crossroads with a minor road
+Crossroads with priority to the right
+Give Way/Yield ahead
+Two-way traffic ahead
+Bicycles only
+No entry for vehicular traffic
+No bicycles
+No heavy goods vehicles
+Road closed to all vehicles
+No left turn
+No right turn
+No overtaking
+Maximum speed limit
+Proceed straight
+Pass on this side
+Roundabout
+Stop
+No parking or waiting
+No stopping
+One-way street
+No through road
+Pedestrian crossing
+End of priority road
+Priority road
+Green
+Red
+Yellow
