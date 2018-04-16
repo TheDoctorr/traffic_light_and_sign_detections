@@ -11,8 +11,9 @@ import numpy as np
 import cv2
 import imutils 
 from imutils.video import VideoStream
+import MySQLdb
 
-image_name=[]
+image_name=[] # Signs and lighs label
 
 def buildModel():
     model = Sequential()
@@ -64,17 +65,20 @@ def train(model):
                              epochs = 40,
                              validation_data = test_set,
                              validation_steps = (1089))
-    model.save('my_model.h5')
+    model.save('my_model.h5')     #model saved
     
 def loadImageNameAndModelWeight():
-    file = open("name_list.txt", "r") 
+    file = open("name_list.txt", "r") #taking light and sing names
     for line in file: 
         image_name.append(line)
-    del(line)
-    return load_model('my_model.h5')
+    return load_model('my_model.h5') #load model
 
 def webcamTest(model):
+    
     cap = VideoStream(src=0).start()
+    previousFoundObject=""
+    db = MySQLdb.connect(host="localhost",user="root",passwd="",db="traffic_objects" )    
+    cursor = db.cursor()  
     while (True):
         original = cap.read()
         img = imutils.resize(original, width=400)
@@ -85,18 +89,25 @@ def webcamTest(model):
         name_num=list(model.predict_proba(img)[0])
         max_value=max(name_num)
         max_index=name_num.index(max_value)
-        if max_value>0.80 :
-            name=image_name[max_index]
-    
-        cv2.putText(original, "Label: {0}".format(name), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        if max_value>0.90 :
+            newFoundObject=image_name[max_index]
+            if newFoundObject != previousFoundObject: #To prevent the object from being added again and again.
+                previousFoundObject=newFoundObject
+                insertToDatabase(cursor ,previousFoundObject)
+                
+        cv2.putText(original, "Label: {0}".format(newFoundObject), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         cv2.imshow("Classification", original)
-        cv2.waitKey(5)
         if (cv2.waitKey(5) & 0xFF == ord('q')):
             break;
-    
     cap.release()
     cv2.destroyAllWindows()
+    db.commit()
+    db.close()
+def insertToDatabase(cursor,detectedObject):
 
+    cursor.execute("INSERT INTO `objects` (`detected_object`, `date`) VALUES ('{0}', NOW());".format(detectedObject))
+    print("{0} Inserted".format(detectedObject))
+     
 def  main():
     model= buildModel()
     #train(model)
